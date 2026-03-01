@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.config import settings
 from app.database import init_db
+from app.routes import auth as auth_router
 import logging
 
 # Configure logging
@@ -68,9 +69,7 @@ async def root():
     }
 
 
-# Placeholder for route includes (will be added in next phase)
-# app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
-# app.include_router(pets.router, prefix="/api/v1/pets", tags=["pets"])
+app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Authentication"])
 
 
 if __name__ == "__main__":
