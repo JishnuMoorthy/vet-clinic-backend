@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from app.config import settings
 from app.database import init_db
 from app.routes import auth as auth_router
+from app.routes import owners as owners_router
 import logging
 
 # Configure logging
@@ -70,6 +71,7 @@ async def root():
 
 
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Authentication"])
+app.include_router(owners_router.router, prefix="/api/v1/owners", tags=["Pet Owners"])
 
 
 if __name__ == "__main__":
