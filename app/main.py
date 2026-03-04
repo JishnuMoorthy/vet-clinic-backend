@@ -6,6 +6,7 @@ from app.config import settings
 from app.database import init_db
 from app.routes import auth as auth_router
 from app.routes import owners as owners_router
+from app.routes import pets as pets_router
 import logging
 
 # Configure logging
@@ -72,6 +73,7 @@ async def root():
 
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(owners_router.router, prefix="/api/v1/owners", tags=["Pet Owners"])
+app.include_router(pets_router.router, prefix="/api/v1/pets", tags=["Pets"])
 
 
 if __name__ == "__main__":
