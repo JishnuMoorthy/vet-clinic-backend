@@ -7,6 +7,11 @@ from app.database import init_db
 from app.routes import auth as auth_router
 from app.routes import owners as owners_router
 from app.routes import pets as pets_router
+from app.routes import staff as staff_router
+from app.routes import appointments as appointments_router
+from app.routes import inventory as inventory_router
+from app.routes import invoices as invoices_router
+from app.routes import dashboard as dashboard_router
 import logging
 
 # Configure logging
@@ -74,6 +79,11 @@ async def root():
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Authentication"])
 app.include_router(owners_router.router, prefix="/api/v1/owners", tags=["Pet Owners"])
 app.include_router(pets_router.router, prefix="/api/v1/pets", tags=["Pets"])
+app.include_router(staff_router.router, prefix="/api/v1/staff", tags=["Staff"])
+app.include_router(appointments_router.router, prefix="/api/v1/appointments", tags=["Appointments"])
+app.include_router(inventory_router.router, prefix="/api/v1/inventory", tags=["Inventory"])
+app.include_router(invoices_router.router, prefix="/api/v1/invoices", tags=["Invoices & Billing"])
+app.include_router(dashboard_router.router, prefix="/api/v1/dashboard", tags=["Dashboard"])
 
 
 if __name__ == "__main__":
