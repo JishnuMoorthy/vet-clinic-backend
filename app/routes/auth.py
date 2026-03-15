@@ -3,14 +3,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.auth import create_access_token, get_current_user, verify_password
 from app.database import get_supabase
-from app.schemas.auth import LoginRequest, MessageResponse, TokenResponse, UserResponse
+from app.schemas.auth import LoginRequest, LoginResponse, MessageResponse, TokenResponse, UserResponse
 
 router = APIRouter()
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login", response_model=LoginResponse)
 async def login(request: LoginRequest):
-    """Authenticate a user and return a JWT access token"""
+    """Authenticate a user and return a JWT access token with user profile"""
     supabase = get_supabase()
     response = (
         supabase.table("users")
@@ -41,7 +41,23 @@ async def login(request: LoginRequest):
         "clinic_id": str(user["clinic_id"]),
     }
     access_token = create_access_token(token_data)
-    return TokenResponse(access_token=access_token)
+
+    user_response = UserResponse(
+        id=str(user["id"]),
+        clinic_id=str(user["clinic_id"]),
+        email=user["email"],
+        name=user["name"],
+        role=user["role"],
+        phone=user.get("phone"),
+        is_active=user["is_active"],
+        created_at=str(user["created_at"]),
+        specialties=[],
+    )
+
+    return LoginResponse(
+        access_token=access_token,
+        user=user_response,
+    )
 
 
 @router.get("/me", response_model=UserResponse)
