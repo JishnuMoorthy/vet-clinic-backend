@@ -25,5 +25,11 @@ class UserResponse(BaseModel):
     specialties: List[str] = Field(default_factory=list)
 
 
+class LoginResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponse
+
+
 class MessageResponse(BaseModel):
     message: str
