@@ -39,7 +39,11 @@ class AppointmentResponse(BaseModel):
     created_at: str
     updated_at: str
     pet_name: Optional[str] = None
+    pet_species: Optional[str] = None
+    pet_breed: Optional[str] = None
+    pet_photo_url: Optional[str] = None
     owner_name: Optional[str] = None
+    owner_phone: Optional[str] = None
     vet_name: Optional[str] = None
 
 

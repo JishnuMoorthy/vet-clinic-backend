@@ -5,10 +5,13 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Initialize Supabase client
+# Initialize Supabase client with the SERVICE ROLE key.
+# The backend is a trusted server — it bypasses RLS and enforces
+# multi-tenant isolation via explicit clinic_id filtering in every route.
+# The anon key must never be used here.
 supabase: Client = create_client(
     settings.SUPABASE_URL,
-    settings.SUPABASE_KEY
+    settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY,
 )
 
 

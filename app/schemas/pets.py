@@ -16,6 +16,7 @@ class PetCreate(BaseModel):
     date_of_birth: Optional[str] = None
     gender: Optional[str] = None
     health_status: Optional[str] = "healthy"
+    photo_url: Optional[str] = None
 
 
 class PetUpdate(BaseModel):
@@ -31,6 +32,7 @@ class PetUpdate(BaseModel):
     date_of_birth: Optional[str] = None
     gender: Optional[str] = None
     health_status: Optional[str] = None
+    photo_url: Optional[str] = None
 
 
 class PetResponse(BaseModel):
@@ -48,9 +50,11 @@ class PetResponse(BaseModel):
     date_of_birth: Optional[str] = None
     gender: Optional[str] = None
     health_status: Optional[str] = None
+    photo_url: Optional[str] = None
     created_at: str
     updated_at: str
     owner_name: Optional[str] = None
+    info_complete: bool = True
 
 
 class PetListResponse(BaseModel):

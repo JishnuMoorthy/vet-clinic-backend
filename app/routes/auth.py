@@ -72,7 +72,7 @@ async def me(current_user: dict = Depends(get_current_user)):
         phone=current_user.get("phone"),
         is_active=current_user["is_active"],
         created_at=str(current_user["created_at"]),
-        specialties=[],
+        specialties=current_user.get("specialties") or [],
     )
 
 

@@ -16,13 +16,17 @@ from app.schemas.appointments import (
 router = APIRouter()
 
 
-def _build_appointment_response(appt: dict, pet_names: dict, owner_names: dict, vet_names: dict) -> AppointmentResponse:
-    """Build an AppointmentResponse from a DB row and name lookup dicts."""
+def _build_appointment_response(appt: dict, pet_info: dict, owner_info: dict, vet_names: dict) -> AppointmentResponse:
+    """Build an AppointmentResponse from a DB row and lookup dicts."""
+    pid = str(appt["pet_id"])
+    oid = str(appt["owner_id"])
+    pet = pet_info.get(pid, {})
+    owner = owner_info.get(oid, {})
     return AppointmentResponse(
         id=str(appt["id"]),
         clinic_id=str(appt["clinic_id"]),
-        pet_id=str(appt["pet_id"]),
-        owner_id=str(appt["owner_id"]),
+        pet_id=pid,
+        owner_id=oid,
         vet_id=str(appt["vet_id"]) if appt.get("vet_id") else None,
         appointment_date=str(appt["appointment_date"]),
         appointment_time=str(appt["appointment_time"]),
@@ -31,34 +35,48 @@ def _build_appointment_response(appt: dict, pet_names: dict, owner_names: dict, 
         notes=appt.get("notes"),
         created_at=str(appt["created_at"]),
         updated_at=str(appt["updated_at"]),
-        pet_name=pet_names.get(str(appt["pet_id"])),
-        owner_name=owner_names.get(str(appt["owner_id"])),
+        pet_name=pet.get("name"),
+        pet_species=pet.get("species"),
+        pet_breed=pet.get("breed"),
+        pet_photo_url=pet.get("photo_url"),
+        owner_name=owner.get("name"),
+        owner_phone=owner.get("phone"),
         vet_name=vet_names.get(str(appt["vet_id"])) if appt.get("vet_id") else None,
     )
 
 
 def _fetch_names(supabase, appointments: list) -> tuple[dict, dict, dict]:
-    """Batch-fetch pet, owner, and vet names for a list of appointment rows."""
+    """Batch-fetch pet info, owner info, and vet names for a list of appointment rows."""
     pet_ids = list({str(a["pet_id"]) for a in appointments if a.get("pet_id")})
     owner_ids = list({str(a["owner_id"]) for a in appointments if a.get("owner_id")})
     vet_ids = list({str(a["vet_id"]) for a in appointments if a.get("vet_id")})
 
-    pet_names: dict = {}
+    pet_info: dict = {}
     if pet_ids:
-        pets = supabase.table("pets").select("id, name").in_("id", pet_ids).execute()
-        pet_names = {str(p["id"]): p["name"] for p in pets.data}
+        pets = (
+            supabase.table("pets")
+            .select("id, name, species, breed, photo_url")
+            .in_("id", pet_ids)
+            .execute()
+        )
+        pet_info = {str(p["id"]): p for p in pets.data}
 
-    owner_names: dict = {}
+    owner_info: dict = {}
     if owner_ids:
-        owners = supabase.table("pet_owners").select("id, name").in_("id", owner_ids).execute()
-        owner_names = {str(o["id"]): o["name"] for o in owners.data}
+        owners = (
+            supabase.table("pet_owners")
+            .select("id, name, phone")
+            .in_("id", owner_ids)
+            .execute()
+        )
+        owner_info = {str(o["id"]): o for o in owners.data}
 
     vet_names: dict = {}
     if vet_ids:
         vets = supabase.table("users").select("id, name").in_("id", vet_ids).execute()
         vet_names = {str(v["id"]): v["name"] for v in vets.data}
 
-    return pet_names, owner_names, vet_names
+    return pet_info, owner_info, vet_names
 
 
 @router.get("", response_model=AppointmentListResponse)

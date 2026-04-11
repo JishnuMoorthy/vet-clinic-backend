@@ -36,6 +36,7 @@ class OwnerResponse(BaseModel):
     created_at: str
     updated_at: str
     pet_count: Optional[int] = 0
+    info_complete: bool = True
 
 
 class OwnerListResponse(BaseModel):

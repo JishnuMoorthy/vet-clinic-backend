@@ -11,6 +11,16 @@ from app.schemas.owners import OwnerCreate, OwnerListResponse, OwnerResponse, Ow
 router = APIRouter()
 
 
+def _owner_info_complete(owner: dict) -> bool:
+    """An owner record is complete if name, phone, email, and address are all filled."""
+    return bool(
+        owner.get("name")
+        and owner.get("phone")
+        and owner.get("email")
+        and owner.get("address")
+    )
+
+
 def _get_pet_count(supabase, owner_id: str) -> int:
     """Return the number of non-deleted pets for a given owner."""
     result = (
@@ -81,6 +91,7 @@ async def list_owners(
                 created_at=str(owner["created_at"]),
                 updated_at=str(owner["updated_at"]),
                 pet_count=pet_counts.get(owner["id"], 0),
+                info_complete=_owner_info_complete(owner),
             )
         )
 
@@ -113,6 +124,7 @@ async def create_owner(
         created_at=str(owner["created_at"]),
         updated_at=str(owner["updated_at"]),
         pet_count=0,
+        info_complete=_owner_info_complete(owner),
     )
 
 
@@ -155,6 +167,7 @@ async def get_owner(
         created_at=str(owner["created_at"]),
         updated_at=str(owner["updated_at"]),
         pet_count=pet_count,
+        info_complete=_owner_info_complete(owner),
     )
 
 
@@ -208,6 +221,7 @@ async def update_owner(
         created_at=str(owner["created_at"]),
         updated_at=str(owner["updated_at"]),
         pet_count=pet_count,
+        info_complete=_owner_info_complete(owner),
     )
 
 

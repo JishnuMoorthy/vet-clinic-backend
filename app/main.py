@@ -2,8 +2,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from app.config import settings
+from app.config import settings, validate_settings
 from app.database import init_db
+
+# Fail fast on insecure config (insecure JWT secret, missing service role key, etc.)
+validate_settings()
 from app.routes import auth as auth_router
 from app.routes import owners as owners_router
 from app.routes import pets as pets_router
@@ -12,6 +15,9 @@ from app.routes import appointments as appointments_router
 from app.routes import inventory as inventory_router
 from app.routes import invoices as invoices_router
 from app.routes import dashboard as dashboard_router
+from app.routes import medical_records as medical_records_router
+from app.routes import services as services_router
+from app.routes import feedback as feedback_router
 import logging
 
 # Configure logging
@@ -28,7 +34,7 @@ app = FastAPI(
 # Add CORS middleware for cross-origin requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
+    allow_origins=settings.cors_origins,  # configured via FRONTEND_ORIGINS env
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -84,6 +90,9 @@ app.include_router(appointments_router.router, prefix="/api/v1/appointments", ta
 app.include_router(inventory_router.router, prefix="/api/v1/inventory", tags=["Inventory"])
 app.include_router(invoices_router.router, prefix="/api/v1/invoices", tags=["Invoices & Billing"])
 app.include_router(dashboard_router.router, prefix="/api/v1/dashboard", tags=["Dashboard"])
+app.include_router(medical_records_router.router, prefix="/api/v1/medical-records", tags=["Medical Records"])
+app.include_router(services_router.router, prefix="/api/v1/services", tags=["Services"])
+app.include_router(feedback_router.router, prefix="/api/v1/feedback", tags=["Feedback"])
 
 
 if __name__ == "__main__":
