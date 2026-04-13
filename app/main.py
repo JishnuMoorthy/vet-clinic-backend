@@ -18,6 +18,7 @@ from app.routes import dashboard as dashboard_router
 from app.routes import medical_records as medical_records_router
 from app.routes import services as services_router
 from app.routes import feedback as feedback_router
+from app.routes import admin as admin_router
 import logging
 
 # Configure logging
@@ -93,6 +94,7 @@ app.include_router(dashboard_router.router, prefix="/api/v1/dashboard", tags=["D
 app.include_router(medical_records_router.router, prefix="/api/v1/medical-records", tags=["Medical Records"])
 app.include_router(services_router.router, prefix="/api/v1/services", tags=["Services"])
 app.include_router(feedback_router.router, prefix="/api/v1/feedback", tags=["Feedback"])
+app.include_router(admin_router.router, prefix="/api/v1/admin", tags=["Admin"])
 
 
 if __name__ == "__main__":
