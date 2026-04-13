@@ -1,4 +1,5 @@
 """Invoices & Billing routes: list, create, get, update, delete, payments"""
+import json
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -37,6 +38,8 @@ def _build_invoice_response(invoice: dict, owner_names: dict, pet_names: dict) -
         notes=invoice.get("notes"),
         created_at=str(invoice["created_at"]),
         updated_at=str(invoice["updated_at"]),
+        line_items=json.loads(invoice["line_items"]) if isinstance(invoice.get("line_items"), str) else (invoice.get("line_items") or []),
+        discount=float(invoice.get("discount") or 0),
         owner_name=owner_names.get(str(invoice["owner_id"])),
         pet_name=pet_names.get(str(invoice["pet_id"])),
     )

@@ -14,6 +14,8 @@ class InvoiceCreate(BaseModel):
     issue_date: str
     notes: Optional[str] = None
     status: Optional[str] = "pending"
+    line_items: Optional[list] = None
+    discount: Optional[float] = 0
 
 
 class InvoiceUpdate(BaseModel):
@@ -27,6 +29,8 @@ class InvoiceUpdate(BaseModel):
     issue_date: Optional[str] = None
     notes: Optional[str] = None
     status: Optional[str] = None
+    line_items: Optional[list] = None
+    discount: Optional[float] = None
 
 
 class InvoiceResponse(BaseModel):
@@ -45,6 +49,8 @@ class InvoiceResponse(BaseModel):
     notes: Optional[str] = None
     created_at: str
     updated_at: str
+    line_items: Optional[list] = None
+    discount: Optional[float] = 0
     owner_name: Optional[str] = None
     pet_name: Optional[str] = None
 
