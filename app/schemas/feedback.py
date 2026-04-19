@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class FeedbackCreate(BaseModel):
     page_path: str
-    rating: Optional[Literal["positive", "neutral", "negative"]] = None
+    rating: Optional[Literal["up", "neutral", "down"]] = None
     message: Optional[str] = None
 
 
